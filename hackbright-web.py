@@ -4,15 +4,26 @@ import hackbright
 
 db = SQLAlchemy()
 
-# def connect_to_db(app):
-#     """Connect to database."""
-
-#     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///hackbright'
-#     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#     db.app = app
-#     db.init_app(app)
-
 app = Flask(__name__)
+
+
+@app.route("/")
+def home():
+    """Homepage with listing of students and projects."""
+
+    _ALL_STUDENTS_SQL = "SELECT * FROM students"
+    _ALL_PROJECTS_SQL = "SELECT * FROM projects"
+
+    student_session = db.session.execute(_ALL_STUDENTS_SQL)
+    students = student_session.fetchall()
+
+    project_session = db.session.execute(_ALL_PROJECTS_SQL)
+    projects = project_session.fetchall()
+
+    return render_template("home.html", 
+                           students=students, 
+                           projects=projects)
+
 
 @app.route("/student")
 def get_student():
@@ -29,11 +40,13 @@ def get_student():
                            last=last_name,
                            rows=rows)
 
+
 @app.route("/student-search")
 def get_student_form():
     """Show form for searching for a student."""
 
     return render_template("student_search.html")
+
 
 @app.route("/student-add", methods=['POST'])
 def student_add():
@@ -49,6 +62,7 @@ def student_add():
                             first=first_name,
                             last=last_name)
 
+
 @app.route("/project")
 def project():
     """Project listing."""
@@ -56,14 +70,13 @@ def project():
     title = request.args.get("title", "Banana Cream Pie")
     title, description, max_grade = hackbright.get_project_by_title(title)
 
-    github, grade = hackbright.get_grades_by_title(title)
+    rows = hackbright.get_grades_by_title(title)    
 
     return render_template("project.html",
                            title=title,
                            description=description,
                            max_grade=max_grade,
-                           github=github,
-                           grade=grade)
+                           rows=rows)
 
 
 if __name__ == "__main__":

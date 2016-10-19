@@ -12,7 +12,15 @@
         <li>Maximum grade: {{ max_grade }}</li>
     </ul>
     <hr>
+    {% if not rows %}
+    <p>No students have completed this project. Entice them to do it!</p>
+    {% else %}
     <p>Students who've completed this project:</p>
-    {{ }}
+    <ul>
+        {% for github, grade in rows %}
+        <li>{{ github }} {{ grade}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 </body>
 </html>
