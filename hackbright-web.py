@@ -79,6 +79,41 @@ def project():
                            rows=rows)
 
 
+@app.route("/create")
+def create():
+    """Form to make new project."""
+
+    return render_template("project_form.html")
+
+
+@app.route("/create-project", methods=["POST"])
+def create_project():
+    """Add a new project and print confirmation.
+
+    From the HTML web form, get a title, description, and maximum grade and 
+    add that info to the database and print a confirmation message.
+    """
+
+    _ADD_PROJECT = """
+                   INSERT INTO projects (title, description, max_grade)
+                   VALUES (:title, :description, :max_grade)
+                   """
+    
+    title = request.form.get('title')
+    description = request.form.get('description')
+    max_grade = int(request.form.get('max_grade'))
+
+    db.session.execute(_ADD_PROJECT, {'title': title,
+                                      'description': description,
+                                      'max_grade': max_grade})
+    db.session.commit()
+    
+    return """
+          Successfully added project: 
+          Title: {}
+          Description: {}
+          Max grade: {}""".format(title, description, max_grade)
+
 if __name__ == "__main__":
     hackbright.connect_to_db(app)
     app.run(debug=True)

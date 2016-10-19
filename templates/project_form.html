@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+    <title>Make a New Project</title>
+</head>
+<body>
+    <h2>Make a new project!</h2>
+
+    <form action="/create-project" method="POST" id="create-project-form">
+        <label>Title of project:</label> <input type="text" name="title"><br><br>
+        <textarea rows="3" cols="50" name="description" form="create-project-form">Describe the project...</textarea><br><br>
+        <label>Maximum Grade (enter a number):</label> <input type="text" name="max_grade"><br><br>
+        <input type="submit">
+    </form>
+
+</body>
+</html>
